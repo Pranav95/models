@@ -147,6 +147,22 @@ class Word2Vec(object):
     self.build_eval_graph()
     self.save_vocab()
 
+
+  def __getitem__(self, item):
+      return self.get_word_embedding(item)
+
+  def get_word_embedding(self, word):
+    """
+
+    :param word: byte string
+    :return: Projection of given word into higher dimension (embedding_size)
+    """
+    assert type(word) == bytes
+    index = tf.placeholder(dtype=tf.int32, name="index")  # word id
+    self.word_to_vector = tf.gather(self._w_in, index)
+    w_id = self._word2id[word]
+    return self._session.run(self.word_to_vector, {index: w_id})
+
   def read_analogies(self):
     """Reads through the analogy question file.
 
